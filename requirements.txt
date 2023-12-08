@@ -1,0 +1,7 @@
+Flask==2.0.1
+Flask-WTF==0.15.1
+WTForms==2.3.3
+python-nmap==0.6.1
+requests==2.26.0
+scapy==2.4.5
+colorama==0.4.4
