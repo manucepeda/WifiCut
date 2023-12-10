@@ -24,7 +24,7 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            background-color: #000;
+            background-color: #ffffff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -153,32 +153,65 @@
         <div id="device-list">
             <h2 class="mt-4">Device List</h2>
             <table class="table table-striped">
-                <!-- ... (your existing device list table) -->
+                <thead>
+                    <tr>
+                        <th>Device Name</th>
+                        <th>IP Address</th>
+                        <th>MAC Address</th>
+                        <th>Manufacturer</th>
+                        <th>Hostname</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for device in nmap_devices %}
+                        <tr>
+                            <td>{{ device.device_name }}</td>
+                            <td>{{ device.ip }}</td>
+                            <td>{{ device.mac }}</td>
+                            <td>{{ device.manufacturer }}</td>
+                            <td>{{ device.hostname }}</td>
+                            <td>
+                                <form action="{{ url_for('restrict') }}" method="post" class="d-inline">
+                                    <input type="hidden" name="device_select" value="{{ device.ip }}_{{ device.mac }}">
+                                    <input type="checkbox" name="enable_schedule"> Enable Schedule
+                                    <input type="time" name="start_time" placeholder="Start Time">
+                                    <input type="time" name="end_time" placeholder="End Time">
+                                    <button type="submit" class="btn btn-danger btn-sm restrict-btn">Restrict</button>
+                                </form>
+                                <form action="{{ url_for('unrestrict') }}" method="post" class="d-inline">
+                                    <input type="hidden" name="device_select" value="{{ device.ip }}_{{ device.mac }}">
+                                    <input type="checkbox" name="enable_schedule"> Enable Schedule
+                                    <input type="time" name="start_time" placeholder="Start Time">
+                                    <input type="time" name="end_time" placeholder="End Time">
+                                    <button type="submit" class="btn btn-success btn-sm unrestrict-btn">Unrestrict</button>                                
+                                </form>                              
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
             {% if status_message %}
-            <div id="status-message"
-                class="status-message {{ 'success-message' if status_type == 'success' else 'error-message' }}">
-                {{ status_message }}
-            </div>
+                <div id="status-message" class="status-message {{ 'success-message' if status_type == 'success' else 'error-message' }}">
+                    {{ status_message }}
+                </div>
             {% endif %}
         </div>
-
+        
         <div id="status" style="display: none;">
             <h2 class="mt-4">Status</h2>
-            <!-- Add status-related content here -->
         </div>
 
         <div id="console" style="display: none;">
             <h2 class="mt-4">Console</h2>
             <div class="console">
-                <!-- Add console-related content here -->
             </div>
         </div>
 
         <div id="logs" style="display: none;">
             <h2 class="mt-4">Logs</h2>
             <div class="logs">
-                <!-- Add logs-related content here -->
+                <pre>{{ log_output|safe }}</pre>
             </div>
         </div>
     </div>

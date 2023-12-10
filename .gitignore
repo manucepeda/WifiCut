@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment configuration
+.env
+
+# Compiled files
+*.pyc
+
+# Dependency directories
+__pycache__/
+node_modules/
