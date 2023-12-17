@@ -1,16 +1,24 @@
+"""
+wifiCut.py
+V1.0
+"""
+
+import sys
+import os
 from io import StringIO
 from logging import StreamHandler
 from flask import Flask, render_template, request, redirect
 from nmap_scanning import run_initial_nmap_scan, parse_nmap_output, save_nmap_result, load_nmap_result, parse_device_id, get_schedule_times
 from forms import RestrictForm, ScheduleForm
-import sys
 from network_operations import restrict_connectivity, unrestrict_connectivity
-import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'replace_with_securely_generated_secret_key'
 
 class LogStreamHandler(StreamHandler):
+    """
+    Custom LogStreamHandler class
+    """
     def __init__(self, stream=None):
         super().__init__(stream or sys.stdout)
         self.log_stream = StringIO()
@@ -62,7 +70,7 @@ def save_nickname():
     return redirect('/')
 
 def edit_nickname_entry(old_nickname, new_nickname):
-    with open('nicknames.txt', 'r') as file:
+    with open('nicknames.txt', 'r', encoding='utf-8') as file:
         lines = file.readlines()
     with open('nicknames.txt', 'w') as file:
         for line in lines:
