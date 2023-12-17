@@ -142,78 +142,78 @@
 </head>
 
 <body>
-    <div class="container">
-        <nav class="navbar">
-            <a class="nav-link active" href="#device-list">Device List</a>
-            <a class="nav-link" href="#status">Status</a>
-            <a class="nav-link" href="#console">Console</a>
-            <a class="nav-link" href="#logs">Logs</a>
-        </nav>
-
-        <div id="device-list">
-            <h2 class="mt-4">Device List</h2>
-            <table class="table table-striped">
-                <thead>
+    <div id="device-list">
+        <h2 class="mt-4">Device List</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Device Name</th>
+                    <th>IP Address</th>
+                    <th>MAC Address</th>
+                    <th>Manufacturer</th>
+                    <th>Hostname</th>
+                    <th>Detected OS (MTU)</th>
+                    <th>Detected OS (TCP)</th>
+                    <th>Detected OS (HTTP)</th>
+                    <th>Action</th>
+                    <th>Nickname</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nickname in saved_nicknames %}
                     <tr>
-                        <th>Device Name</th>
-                        <th>IP Address</th>
-                        <th>MAC Address</th>
-                        <th>Manufacturer</th>
-                        <th>Hostname</th>
-                        <th>Action</th>
+                        <td>{{ nickname }}</td>
+                        <td>
+                            <form method="post" action="/edit_nickname">
+                                <input type="hidden" name="old_nickname" value="{{ nickname }}">
+                                <input type="text" name="new_nickname" required>
+                                <button type="submit" name="edit_nickname">Edit</button>
+                            </form>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for device in nmap_devices %}
-                        <tr>
-                            <td>{{ device.device_name }}</td>
-                            <td>{{ device.ip }}</td>
-                            <td>{{ device.mac }}</td>
-                            <td>{{ device.manufacturer }}</td>
-                            <td>{{ device.hostname }}</td>
-                            <td>
-                                <form action="{{ url_for('restrict') }}" method="post" class="d-inline">
-                                    <input type="hidden" name="device_select" value="{{ device.ip }}_{{ device.mac }}">
-                                    <input type="checkbox" name="enable_schedule"> Enable Schedule
-                                    <input type="time" name="start_time" placeholder="Start Time">
-                                    <input type="time" name="end_time" placeholder="End Time">
-                                    <button type="submit" class="btn btn-danger btn-sm restrict-btn">Restrict</button>
-                                </form>
-                                <form action="{{ url_for('unrestrict') }}" method="post" class="d-inline">
-                                    <input type="hidden" name="device_select" value="{{ device.ip }}_{{ device.mac }}">
-                                    <input type="checkbox" name="enable_schedule"> Enable Schedule
-                                    <input type="time" name="start_time" placeholder="Start Time">
-                                    <input type="time" name="end_time" placeholder="End Time">
-                                    <button type="submit" class="btn btn-success btn-sm unrestrict-btn">Unrestrict</button>                                
-                                </form>                              
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% if status_message %}
-                <div id="status-message" class="status-message {{ 'success-message' if status_type == 'success' else 'error-message' }}">
-                    {{ status_message }}
-                </div>
-            {% endif %}
-        </div>
-        
-        <div id="status" style="display: none;">
-            <h2 class="mt-4">Status</h2>
-        </div>
-
-        <div id="console" style="display: none;">
-            <h2 class="mt-4">Console</h2>
-            <div class="console">
+                {% endfor %}
+            </tbody>
+            <tbody>
+                {% for device in nmap_devices %}
+                    <tr>
+                        <td>{{ device.device_name }}</td>
+                        <td>{{ device.ip }}</td>
+                        <td>{{ device.mac }}</td>
+                        <td>{{ device.manufacturer}}</td>
+                        <td>{{ device.hostname }}</td>
+                        <td>{{ device.os_mtu }}</td>
+                        <td>{{ device.os_tcp }}</td>
+                        <td>{{ device.os_http }}</td>
+                        <td>
+                            <form action="{{ url_for('restrict') }}" method="post" class="d-inline">
+                                <input type="hidden" name="device_select" value="{{ device.ip }}_{{ device.mac }}">
+                                <input type="checkbox" name="enable_schedule"> Enable Schedule
+                                <input type="time" name="start_time" placeholder="Start Time">
+                                <input type="time" name="end_time" placeholder="End Time">
+                                <button type="submit" class="btn btn-danger btn-sm restrict-btn">Restrict</button>
+                            </form>
+                            <form action="{{ url_for('unrestrict') }}" method="post" class="d-inline">
+                                <input type="hidden" name="device_select" value="{{ device.ip }}_{{ device.mac }}">
+                                <input type="checkbox" name="enable_schedule"> Enable Schedule
+                                <input type="time" name="start_time" placeholder="Start Time">
+                                <input type="time" name="end_time" placeholder="End Time">
+                                <button type="submit" class="btn btn-success btn-sm unrestrict-btn">Unrestrict</button>
+                            </form>
+                            <form method="post" action="/save_nickname" class="d-inline">
+                                <label for="nickname">Nickname:</label>
+                                <input type="text" id="nickname" name="nickname" required>
+                                <button type="submit" name="save_nickname">Save Nickname</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if status_message %}
+            <div id="status-message" class="status-message {{ 'success-message' if status_type == 'success' else 'error-message' }}">
+                {{ status_message }}
             </div>
-        </div>
-
-        <div id="logs" style="display: none;">
-            <h2 class="mt-4">Logs</h2>
-            <div class="logs">
-                <pre>{{ log_output|safe }}</pre>
-            </div>
-        </div>
+        {% endif %}
     </div>
 
     <script>
