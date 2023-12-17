@@ -1,11 +1,10 @@
-import nmap
 import socket
 import json
 import logging
 from pathlib import Path
 from datetime import time as dt_time
+import nmap
 import requests
-import os
 import sys
 
 # Configure logging
@@ -103,8 +102,8 @@ def parse_nmap_output(nmap_hosts, nm):
                         }
                         host_info["open_ports"].append(port_info)
 
-            devices.append(host_info)
-            logging.info(f"Host {host} processed successfully.")
+                devices.append(host_info)
+                logging.info(f"Host {host} processed successfully.")
         except Exception as e:
             logging.error(f"Error processing host {host}: {e}")
 
@@ -140,11 +139,8 @@ def parse_device_id(device_select):
             ip_address, mac_address = parts
             print(f'Parsed IP: {ip_address}, MAC: {mac_address}')
             return ip_address, mac_address
-        else:
-            print('Invalid device_select format')
-            return None, None
     else:
-        print('device_select is None')
+        print('Invalid device_select format')
         return None, None
     
 def get_schedule_times(form):
